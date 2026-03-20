@@ -1,0 +1,62 @@
+#!/usr/bin/env ruby
+# Resume a project that paused for clarification, providing answers.
+#
+# Usage:
+#   spark_resume <project_slug> "answers to the questions"
+#
+# Example:
+#   spark_resume paint-vault "yes I want barcode scanning, no sharing needed"
+
+require "bundler/setup"
+require_relative "../lib/spark"
+
+project_slug = ARGV[0]
+answer = ARGV[1]
+
+unless project_slug && answer
+  puts "Usage: spark_resume <project_slug> \"your answers\""
+  exit 1
+end
+
+tracker = Spark::Tracker::Project.load(project_slug)
+unless tracker
+  puts "Project '#{project_slug}' not found"
+  exit 1
+end
+
+run_id = Spark::Utils.make_run_id
+logger = Logger.new($stdout)
+logger.formatter = proc { |sev, dt, _, msg| "[#{dt.strftime('%H:%M:%S')}] [#{sev}] #{msg}\n" }
+
+# Load the original message and append the answer
+original_message = tracker[:raw_message] || ""
+combined_message = "#{original_message}\n\nClarification: #{answer}"
+
+# Determine which mode to resume with
+mode = tracker[:mode] || Spark.default_mode
+
+logger.info("Resuming project '#{project_slug}' (run: #{run_id})")
+logger.info("Original idea: #{original_message}")
+logger.info("Clarification: #{answer}")
+
+workflow_class = case mode
+                 when "sketch" then Spark::Workflows::Sketch
+                 when "plan"   then Spark::Workflows::Plan
+                 when "build"  then Spark::Workflows::Build
+                 when "ship"   then Spark::Workflows::Ship
+                 end
+
+result = workflow_class.result(
+  raw_message: combined_message,
+  project_slug: project_slug,
+  run_id: run_id,
+  logger: logger,
+  mode: mode
+)
+
+if result.success?
+  logger.info("Resume complete!")
+else
+  logger.error("Resume failed: #{result.error}")
+  exit 1
+end

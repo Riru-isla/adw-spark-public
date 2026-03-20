@@ -1,0 +1,29 @@
+---
+name: Penny Pals
+slug: penny-pals
+description: A friendly personal money tracker with budgets, colorful charts, and
+  a reactive pet mascot that celebrates good spending habits
+features:
+- 'Transaction logging: Add income and expenses with amount, date, notes, and category
+  — mark expenses as fixed (recurring) or variable'
+- 'Category management: Create and manage spending/income categories with custom names
+  and color-coded icons'
+- 'Monthly budgets: Set a budget limit per category and track remaining balance with
+  visual progress bars'
+- 'Dashboard with charts: Spending breakdown pie chart, budget progress bars per category,
+  and a monthly spending trend line chart — all colorful and easy to read'
+- 'Pet mascot widget: A small animated character on the dashboard that reacts to spending
+  habits — happy when under budget, worried when close to limits, sad when over budget'
+- 'Transaction list with filters: View all transactions with filter by category, type
+  (income/expense/fixed/variable), and date range'
+assumptions:
+- Single-user app — no auth needed, one person's finances
+- Fixed expenses are manually entered (not auto-recurring) — user logs them each month
+- Budgets reset monthly on the 1st of each month
+- Categories come with sensible defaults (Rent, Groceries, Dining Out, Transport,
+  Hobbies, Entertainment, Utilities, Income) but are fully customizable
+- The pet mascot is a simple illustrated character with 3-5 mood states, not a complex
+  animation system
+- Charts use a lightweight library like Chart.js for colorful, playful visualizations
+- Currency is a single default (USD) — no multi-currency support in MVP
+questions: []

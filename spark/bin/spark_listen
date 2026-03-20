@@ -1,0 +1,47 @@
+#!/usr/bin/env ruby
+# Listens for messages on stdin (one per line) and triggers spark pipelines.
+# Can be connected to Action Cable, a Telegram bot, or any message source.
+#
+# Usage:
+#   echo "paint collection app, ship it" | spark_listen
+#   tail -f /tmp/spark_inbox | spark_listen
+
+require "bundler/setup"
+require_relative "../lib/spark"
+
+logger = Logger.new($stdout)
+logger.formatter = proc { |sev, dt, _, msg| "[#{dt.strftime('%H:%M:%S')}] [#{sev}] #{msg}\n" }
+
+logger.info("Spark listener started. Waiting for ideas...")
+
+$stdin.each_line do |line|
+  message = line.strip
+  next if message.empty?
+
+  run_id = Spark::Utils.make_run_id
+  logger.info("Received idea (run: #{run_id}): #{message}")
+
+  # Fork to handle in background
+  pid = Process.fork do
+    run_logger = Spark::Utils.setup_logger("pending", run_id, "listener")
+    run_logger.info("Processing: #{message}")
+
+    # Default to sketch mode — the message itself can override
+    result = Spark::Workflows::Sketch.result(
+      raw_message: message,
+      project_slug: "pending",
+      run_id: run_id,
+      logger: run_logger,
+      mode: Spark.default_mode
+    )
+
+    if result.success?
+      run_logger.info("Idea processed successfully!")
+    else
+      run_logger.error("Failed: #{result.error}")
+    end
+  end
+
+  Process.detach(pid)
+  logger.info("Spawned worker PID #{pid} for run #{run_id}")
+end

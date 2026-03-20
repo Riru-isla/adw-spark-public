@@ -1,0 +1,83 @@
+#!/usr/bin/env ruby
+# Clean up a generated project — deletes local files AND the GitHub repo.
+#
+# Usage:
+#   spark_clean bookmark-manager          # asks for confirmation
+#   spark_clean bookmark-manager --force  # no confirmation
+
+require "bundler/setup"
+require_relative "../lib/spark"
+require "open3"
+
+slug = ARGV[0]
+force = ARGV.include?("--force")
+
+unless slug
+  puts "Usage: spark_clean <project-slug> [--force]"
+  puts ""
+  puts "This will delete:"
+  puts "  - Local project files in .projects/<slug>/"
+  puts "  - The GitHub repository (if it exists)"
+  puts ""
+  # List available projects
+  projects_dir = Spark.projects_dir
+  if Dir.exist?(projects_dir)
+    projects = Dir.children(projects_dir).select { |d| File.directory?(File.join(projects_dir, d)) }
+    if projects.any?
+      puts "Available projects:"
+      projects.each { |p| puts "  - #{p}" }
+    else
+      puts "No projects found."
+    end
+  end
+  exit 1
+end
+
+project_dir = File.join(Spark.projects_dir, slug)
+tracker_path = File.join(project_dir, "project.yaml")
+
+# Load tracker to find repo name
+repo_name = nil
+if File.exist?(tracker_path)
+  tracker = YAML.safe_load(File.read(tracker_path), symbolize_names: true)
+  repo_name = tracker[:repo_name]
+end
+
+puts "Will delete:"
+puts "  Local:  #{project_dir}" if Dir.exist?(project_dir)
+puts "  GitHub: #{repo_name}" if repo_name
+puts "  (nothing found)" unless Dir.exist?(project_dir) || repo_name
+
+unless Dir.exist?(project_dir) || repo_name
+  puts "Nothing to clean for '#{slug}'."
+  exit 0
+end
+
+unless force
+  print "\nAre you sure? [y/N] "
+  answer = $stdin.gets&.strip&.downcase
+  unless answer == "y"
+    puts "Cancelled."
+    exit 0
+  end
+end
+
+# Delete GitHub repo
+if repo_name
+  print "Deleting GitHub repo #{repo_name}... "
+  _, stderr, status = Open3.capture3("gh", "repo", "delete", repo_name, "--yes")
+  if status.success?
+    puts "done."
+  else
+    puts "failed: #{stderr.strip}"
+  end
+end
+
+# Delete local files
+if Dir.exist?(project_dir)
+  print "Deleting local files #{project_dir}... "
+  FileUtils.rm_rf(project_dir)
+  puts "done."
+end
+
+puts "\nClean complete for '#{slug}'."

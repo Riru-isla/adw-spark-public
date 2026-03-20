@@ -1,0 +1,26 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  max_connections: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  url: <%= ENV["DATABASE_URL"] %>
+
+development:
+  <<: *default
+  database: collectibles_vault_development
+  username: collectibles
+  password: password
+  host: localhost
+
+test:
+  <<: *default
+  database: collectibles_vault_test
+  username: collectibles
+  password: password
+  host: localhost
+
+production:
+  <<: *default
+  database: collectibles_vault_production
+  username: collectibles
+  password: <%= ENV["POSTGRES_PASSWORD"] %>
+  host: <%= ENV.fetch("POSTGRES_HOST", "db") %>

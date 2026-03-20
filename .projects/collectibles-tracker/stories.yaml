@@ -1,0 +1,170 @@
+---
+- number: 1
+  title: Database schema and models for collections and items
+  description: 'Create the database tables and Active Record models for the two core
+    entities: Collection and Item. Set up Active Storage for item photos and define
+    all validations and associations.'
+  type: chore
+  depends_on: []
+  acceptance_criteria:
+  - Collections table exists with name, category, description columns and timestamps
+  - Items table exists with name, condition, estimated_value (decimal), acquisition_date,
+    notes, and collection reference
+  - Item model has Active Storage has_many_attached :photos
+  - Condition is validated against the 5-tier enum (mint, near_mint, good, fair, poor)
+  - Collection has_many items with dependent destroy
+- number: 2
+  title: Collections API endpoints
+  description: Build the RESTful API for creating, reading, updating, and deleting
+    collections. Each collection response includes item count and total estimated
+    value.
+  type: feature
+  depends_on:
+  - 1
+  acceptance_criteria:
+  - GET /api/collections returns all collections with item_count and total_value
+  - POST /api/collections creates a collection with name, category, description
+  - PUT /api/collections/:id updates a collection
+  - DELETE /api/collections/:id destroys a collection and its items
+  - Validation errors return 422 with error messages
+- number: 3
+  title: Items API endpoints with photo uploads
+  description: Build the RESTful API for CRUD operations on items within a collection,
+    including multi-photo upload via Active Storage.
+  type: feature
+  depends_on:
+  - 1
+  - 2
+  acceptance_criteria:
+  - POST /api/collections/:id/items creates an item with photos attached
+  - GET /api/collections/:id/items returns items for a collection with photo URLs
+  - PUT /api/items/:id updates item fields and can add/remove photos
+  - DELETE /api/items/:id destroys an item and its attached photos
+  - GET /api/items/:id returns a single item with all details and photo URLs
+- number: 4
+  title: Dashboard API endpoint
+  description: 'Create an endpoint that returns aggregate statistics for the dashboard
+    overview: total collections, total items, total estimated value, and recently
+    added items.'
+  type: feature
+  depends_on:
+  - 2
+  - 3
+  acceptance_criteria:
+  - GET /api/dashboard returns total_collections, total_items, total_estimated_value
+  - Response includes recently_added_items (last 10 items with photo URLs)
+  - Total estimated value is summed across all items
+  - Recently added items are ordered by created_at descending
+- number: 5
+  title: Vue app shell and dashboard page
+  description: Set up the Vue frontend with router, a top-level layout with navigation,
+    and the dashboard page displaying overview statistics and recently added items.
+  type: feature
+  depends_on:
+  - 4
+  acceptance_criteria:
+  - Vue app has a layout with navigation links to Dashboard, Collections
+  - Dashboard page fetches and displays total collections, items, and value
+  - Recently added items display as cards with thumbnail, name, and collection
+  - Navigation highlights the current active route
+- number: 6
+  title: Collections list and management UI
+  description: Build the Vue pages for viewing all collections and creating/editing/deleting
+    collections via modal or form.
+  type: feature
+  depends_on:
+  - 2
+  - 5
+  acceptance_criteria:
+  - Collections index page shows all collections as cards with name, category, item
+    count, total value
+  - Create collection form with name, category, and description fields
+  - Edit and delete actions available on each collection card
+  - Form validation shows errors inline on failure
+- number: 7
+  title: Items list and detail views
+  description: Build the Vue pages for viewing items within a collection. Show items
+    in a default list layout with the ability to click into a detail view.
+  type: feature
+  depends_on:
+  - 3
+  - 6
+  acceptance_criteria:
+  - Collection detail page lists all items with thumbnail, name, condition, and value
+  - Clicking an item opens a detail view with all photos, full notes, and metadata
+  - Back navigation returns to the collection item list
+  - Empty state shown when a collection has no items
+- number: 8
+  title: Item create and edit forms with photo upload
+  description: Build the Vue forms for adding and editing items, including multi-photo
+    upload with preview.
+  type: feature
+  depends_on:
+  - 7
+  acceptance_criteria:
+  - Add item form with fields for name, condition (dropdown), value, acquisition date,
+    notes, and photo upload
+  - Photo upload supports selecting multiple files with thumbnail previews before
+    submit
+  - Edit item form pre-populates all fields and existing photos
+  - Condition dropdown shows the 5-tier scale options
+- number: 9
+  title: Grid and list view toggle
+  description: Add a toggle on the collection detail page to switch between a photo
+    grid view and a compact list view for browsing items.
+  type: feature
+  depends_on:
+  - 7
+  acceptance_criteria:
+  - Toggle button switches between grid and list views
+  - Grid view shows item photos as a responsive image grid with name and value overlay
+  - List view shows a compact table with name, condition, value, and date
+  - Selected view preference persists during the session
+- number: 10
+  title: Search and filter functionality
+  description: Add full-text search across item names and notes, plus filters for
+    collection, category, condition, and value range. Backend search endpoint plus
+    frontend UI.
+  type: feature
+  depends_on:
+  - 3
+  - 7
+  acceptance_criteria:
+  - GET /api/items/search accepts query, collection_id, category, condition, value_min,
+    value_max params
+  - Search results return matching items with relevance across name and notes
+  - Frontend search bar and filter panel with dropdowns and value range inputs
+  - Filters combine with search text and update results in real time
+- number: 11
+  title: Value summary breakdowns
+  description: Add per-collection and overall value summaries with breakdown by condition
+    tier. Show on collection detail and dashboard pages.
+  type: feature
+  depends_on:
+  - 4
+  - 7
+  acceptance_criteria:
+  - 'Collection detail page shows value breakdown by condition (e.g. Mint: $X, Good:
+    $Y)'
+  - Dashboard shows overall value breakdown by condition
+  - API endpoint returns value aggregations grouped by condition
+  - Values display formatted as USD currency
+- number: 12
+  title: Integration test and final polish
+  description: Add end-to-end integration tests covering the critical user flows and
+    polish any rough UI edges.
+  type: chore
+  depends_on:
+  - 5
+  - 6
+  - 7
+  - 8
+  - 9
+  - 10
+  - 11
+  acceptance_criteria:
+  - 'Integration test: create a collection, add an item with photos, verify it appears
+    on dashboard'
+  - 'Integration test: search for an item by name and verify results'
+  - 'Integration test: toggle between grid and list views'
+  - All pages have consistent styling and no broken layouts

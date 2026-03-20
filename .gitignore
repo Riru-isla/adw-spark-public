@@ -1,0 +1,32 @@
+# Environment
+.env
+
+# Generated projects (ignore all except showcase examples)
+!.projects/money-tracker/
+
+# Ruby
+spark/vendor/
+spark/.bundle/
+
+# Claude (local settings only — commands and shared settings are tracked)
+.claude/settings.local.json
+
+# macOS
+.DS_Store
+
+# Plans (local scratch)
+plans/
+
+# IDE / editor
+.ruby-lsp/
+
+# Log / output files
+*.log
+spark/*.log
+output_*
+
+# Personal scratch (keep folders via .gitkeep, ignore contents)
+ideas/*
+!ideas/.gitkeep
+app_docs/*
+!app_docs/.gitkeep

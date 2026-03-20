@@ -1,0 +1,75 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: penny_pals
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: penny_pals_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3.6"
+          bundler-cache: true
+          working-directory: backend
+
+      - name: Set up database
+        env:
+          DATABASE_URL: postgres://penny_pals:password@localhost:5432/penny_pals_test
+          RAILS_ENV: test
+        run: bundle exec rails db:create db:migrate
+
+      - name: Run RSpec
+        env:
+          DATABASE_URL: postgres://penny_pals:password@localhost:5432/penny_pals_test
+          RAILS_ENV: test
+        run: bundle exec rspec
+
+  frontend:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - run: npm ci
+
+      - name: Run Vitest
+        run: npm run test:unit
+
+      - name: Type check
+        run: npm run type-check

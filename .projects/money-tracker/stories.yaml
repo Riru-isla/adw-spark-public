@@ -1,0 +1,161 @@
+---
+- number: 1
+  title: Database schema and models for core entities
+  description: Create migrations and models for categories, transactions, and monthly
+    budgets. Categories have name, icon, and color. Transactions have amount, date,
+    notes, category reference, transaction_type (income/expense), and expense_kind
+    (fixed/variable). Budgets have category reference, month, year, and limit amount.
+    Seed default categories.
+  type: chore
+  depends_on: []
+  acceptance_criteria:
+  - Categories table exists with name, icon, color columns and model validations
+  - Transactions table exists with amount, date, notes, category_id, transaction_type,
+    expense_kind columns
+  - Budgets table exists with category_id, month, year, limit_amount columns with
+    unique constraint on category+month+year
+  - Default categories are seeded (Rent, Groceries, Dining Out, Transport, Hobbies,
+    Entertainment, Utilities, Income)
+  - Model associations are defined (Category has_many transactions and budgets)
+- number: 2
+  title: Categories API endpoints
+  description: Build RESTful API endpoints for managing spending and income categories
+    with CRUD operations. Categories include custom name, color, and icon.
+  type: feature
+  depends_on:
+  - 1
+  acceptance_criteria:
+  - GET /api/categories returns all categories with their attributes
+  - POST /api/categories creates a new category with name, color, and icon
+  - PATCH /api/categories/:id updates a category
+  - DELETE /api/categories/:id removes a category (only if no transactions reference
+    it)
+  - API returns proper JSON responses and error messages
+- number: 3
+  title: Transactions API endpoints
+  description: Build RESTful API endpoints for logging income and expenses. Support
+    creating, listing, and deleting transactions with all required fields.
+  type: feature
+  depends_on:
+  - 1
+  acceptance_criteria:
+  - POST /api/transactions creates a transaction with amount, date, notes, category_id,
+    transaction_type, and expense_kind
+  - GET /api/transactions returns all transactions ordered by date descending
+  - DELETE /api/transactions/:id removes a transaction
+  - Transactions validate required fields and proper enum values
+  - API supports query params for filtering by category, type, expense_kind, and date
+    range
+- number: 4
+  title: Monthly budgets API endpoints
+  description: Build API endpoints to set and retrieve monthly budget limits per category,
+    including computed spent and remaining amounts.
+  type: feature
+  depends_on:
+  - 1
+  - 3
+  acceptance_criteria:
+  - POST /api/budgets creates or updates a budget for a category+month+year
+  - GET /api/budgets?month=M&year=Y returns all budgets for that month with spent
+    and remaining amounts calculated from transactions
+  - Budget response includes category details, limit_amount, spent_amount, and remaining_amount
+  - Budgets default to current month if no params provided
+- number: 5
+  title: Dashboard summary API endpoint
+  description: 'Build an aggregation endpoint that provides all data needed for the
+    dashboard: spending breakdown by category, monthly trend data, and overall budget
+    health status.'
+  type: feature
+  depends_on:
+  - 1
+  - 3
+  - 4
+  acceptance_criteria:
+  - GET /api/dashboard returns spending breakdown by category for current month
+  - Response includes monthly spending totals for the last 6 months for trend data
+  - Response includes overall budget health (total budgeted, total spent, percentage)
+  - Response includes pet mood indicator based on budget status (happy/worried/sad)
+- number: 6
+  title: Vue app shell and category management UI
+  description: Set up the Vue frontend with router, basic layout, and build the category
+    management page where users can view, create, edit, and delete categories with
+    color pickers.
+  type: feature
+  depends_on:
+  - 2
+  acceptance_criteria:
+  - Vue app has a sidebar or nav with links to Dashboard, Transactions, Categories,
+    and Budgets pages
+  - Categories page lists all categories with their color and icon
+  - Users can add a new category with name, color picker, and icon selection
+  - Users can edit and delete existing categories
+- number: 7
+  title: Transaction logging and list UI
+  description: Build the transactions page with a form to add new transactions and
+    a filterable list showing all transactions.
+  type: feature
+  depends_on:
+  - 3
+  - 6
+  acceptance_criteria:
+  - Transaction form captures amount, date, notes, category (dropdown), type (income/expense),
+    and expense_kind (fixed/variable)
+  - Transaction list displays all transactions with category color coding
+  - Filter controls for category, type, expense_kind, and date range work correctly
+  - Transactions can be deleted from the list
+- number: 8
+  title: Budget management UI with progress bars
+  description: Build the budgets page where users can set monthly budget limits per
+    category and see visual progress bars showing spent vs. remaining.
+  type: feature
+  depends_on:
+  - 4
+  - 6
+  acceptance_criteria:
+  - Users can set a budget limit for each category for the current month
+  - Progress bars show spent vs. limit with category colors
+  - Progress bars change color as spending approaches or exceeds the limit (green
+    → yellow → red)
+  - Monthly budget totals are displayed
+- number: 9
+  title: Dashboard with charts
+  description: Build the main dashboard page with a spending breakdown pie chart,
+    budget progress bars, and a monthly spending trend line chart using Chart.js.
+  type: feature
+  depends_on:
+  - 5
+  - 6
+  acceptance_criteria:
+  - Pie chart shows spending breakdown by category with category colors
+  - Budget progress bars display per-category budget status
+  - Line chart shows monthly spending trend for the last 6 months
+  - Dashboard uses colorful, playful styling consistent with the app theme
+- number: 10
+  title: Pet mascot widget
+  description: Add an animated pet mascot character to the dashboard that reacts to
+    the user's overall budget health with different mood states.
+  type: feature
+  depends_on:
+  - 9
+  acceptance_criteria:
+  - Pet mascot displays on the dashboard with a friendly illustrated character
+  - Mascot shows happy state when overall spending is under budget
+  - Mascot shows worried state when spending is within 80-100% of total budget
+  - Mascot shows sad state when spending exceeds budget
+  - Mood transitions include simple CSS animations
+- number: 11
+  title: Integration tests and final polish
+  description: Add end-to-end integration tests covering the main user flows and polish
+    the UI with consistent styling, loading states, and empty states.
+  type: chore
+  depends_on:
+  - 7
+  - 8
+  - 9
+  - 10
+  acceptance_criteria:
+  - Integration test covers creating a category, logging a transaction, and viewing
+    dashboard
+  - Integration test covers setting a budget and verifying progress bar updates
+  - Empty states are shown when no transactions or budgets exist
+  - App has consistent colorful styling and responsive layout

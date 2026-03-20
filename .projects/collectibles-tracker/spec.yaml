@@ -1,0 +1,29 @@
+---
+name: Collectibles Vault
+slug: collectibles-vault
+description: Track and organize your collectibles across multiple collections with
+  photos, condition ratings, values, and searchable notes
+features:
+- 'Collection management: create, edit, and delete collections with a name, category
+  (e.g. coins, comics, vinyl, cards), and optional description'
+- 'Item tracking: add items to a collection with name, photos (upload multiple), condition
+  (mint/near-mint/good/fair/poor), estimated value, acquisition date, and freeform
+  notes'
+- 'Dashboard overview: see total collections, total items, total estimated value,
+  and recently added items at a glance'
+- 'Search and filter: full-text search across item names and notes, filter by collection,
+  category, condition, and value range'
+- 'Grid and list views: toggle between a photo grid view and a compact list view for
+  browsing items'
+- 'Value summary: per-collection and overall value totals with simple breakdown by
+  condition'
+assumptions:
+- Single-user app, no authentication needed
+- Photos stored locally on disk via Active Storage, not a cloud service
+- Condition uses a fixed 5-tier scale (Mint, Near Mint, Good, Fair, Poor) rather than
+  free text
+- Values are stored in USD as decimals, no multi-currency support needed
+- Categories are user-defined free text, not a fixed taxonomy
+- No import/export functionality for v1 — manual entry only
+- No sharing or public collection pages
+questions: []

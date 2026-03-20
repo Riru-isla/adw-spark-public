@@ -1,0 +1,68 @@
+#!/usr/bin/env ruby
+# Main entry point: spark "your idea message here" [mode]
+#
+# Examples:
+#   spark "an app to organize my paint collection"
+#   spark "a recipe manager, build with phoenix+react" plan
+#   spark "todo app, guess everything, ship it"
+
+require "bundler/setup"
+require_relative "../lib/spark"
+
+raw_message = ARGV[0]
+mode_override = ARGV[1]
+
+unless raw_message
+  puts "Usage: spark \"your idea message\" [sketch|plan|build|ship]"
+  puts ""
+  puts "Modes:"
+  puts "  sketch  - Generate spec + stories only (default)"
+  puts "  plan    - Spec + stories + create repo + issues"
+  puts "  build   - Full implementation"
+  puts "  ship    - Full implementation + deploy"
+  puts ""
+  puts "You can also set the mode in the message:"
+  puts '  spark "paint collection app, ship it"'
+  exit 1
+end
+
+run_id = Spark::Utils.make_run_id
+mode = mode_override || Spark.default_mode
+logger = Logger.new($stdout)
+logger.formatter = proc { |sev, dt, _, msg| "[#{dt.strftime('%H:%M:%S')}] [#{sev}] #{msg}\n" }
+
+logger.info("Spark ignited! Run: #{run_id}")
+logger.info("Message: #{raw_message}")
+logger.info("Mode: #{mode}")
+
+# Pick the workflow based on mode
+workflow_class = case mode
+                 when "sketch" then Spark::Workflows::Sketch
+                 when "plan"   then Spark::Workflows::Plan
+                 when "build"  then Spark::Workflows::Build
+                 when "ship"   then Spark::Workflows::Ship
+                 else
+                   logger.error("Unknown mode: #{mode}")
+                   exit 1
+                 end
+
+result = workflow_class.result(
+  raw_message: raw_message,
+  project_slug: "pending",
+  run_id: run_id,
+  logger: logger,
+  mode: mode
+)
+
+if result.success?
+  logger.info("Spark complete!")
+else
+  logger.error("Spark failed: #{result.error}")
+end
+
+# Always print token usage summary (even on failure — partial runs still cost money)
+# Resolve the actual slug from the run tracker
+actual_slug = Dir.glob(File.join(Spark.projects_dir, "*", "runs", "#{run_id}.yaml")).map { |p| p.split("/")[-3] }.first
+Spark::Agent.print_usage_summary(actual_slug || "pending", run_id) if actual_slug
+
+exit 1 unless result.success?

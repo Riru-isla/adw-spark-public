@@ -1,0 +1,307 @@
+---
+run_id: 31ec6fef
+mode: sketch
+trigger: message
+status: build_complete
+started_at: '2026-03-15T22:23:39+01:00'
+current_phase: smoke_testing
+completed_stories:
+- 1
+- 2
+- 3
+- 4
+- 6
+- 5
+- 7
+- 8
+- 9
+- 10
+- 11
+errors: []
+updated_at: '2026-03-15T23:35:46+01:00'
+token_usage:
+  :agents:
+    :spec_generator:
+      :input: 2
+      :output: 463
+      :total: 465
+      :cost_usd: 0.09171924999999999
+      :num_turns: 1
+      :duration_s: 12
+    :gate_spec_review:
+      :input: 2
+      :output: 324
+      :total: 326
+      :cost_usd: 0.0270693
+      :num_turns: 1
+      :duration_s: 8
+    :story_generator:
+      :input: 2
+      :output: 1517
+      :total: 1519
+      :cost_usd: 0.075006
+      :num_turns: 1
+      :duration_s: 31
+    :gate_stories_review:
+      :input: 2
+      :output: 381
+      :total: 383
+      :cost_usd: 0.0320793
+      :num_turns: 1
+      :duration_s: 9
+    :bootstrapper:
+      :input: 46
+      :output: 7916
+      :total: 7962
+      :cost_usd: 0.6076302
+      :num_turns: 46
+      :duration_s: 198
+    :planner_story_1:
+      :input: 3
+      :output: 1266
+      :total: 1269
+      :cost_usd: 0.21526725000000002
+      :num_turns: 2
+      :duration_s: 93
+    :implementer_story_1:
+      :input: 45
+      :output: 7885
+      :total: 7930
+      :cost_usd: 0.6086886
+      :num_turns: 55
+      :duration_s: 162
+    :context_story_1:
+      :input: 3
+      :output: 936
+      :total: 939
+      :cost_usd: 0.08948900000000001
+      :num_turns: 2
+      :duration_s: 39
+    :planner_story_2:
+      :input: 3
+      :output: 1015
+      :total: 1018
+      :cost_usd: 0.19167279999999998
+      :num_turns: 2
+      :duration_s: 80
+    :implementer_story_2:
+      :input: 18
+      :output: 3945
+      :total: 3963
+      :cost_usd: 0.22910655
+      :num_turns: 22
+      :duration_s: 82
+    :context_story_2:
+      :input: 3
+      :output: 899
+      :total: 902
+      :cost_usd: 0.08576400000000002
+      :num_turns: 2
+      :duration_s: 42
+    :planner_story_3:
+      :input: 3
+      :output: 1221
+      :total: 1224
+      :cost_usd: 0.1857037
+      :num_turns: 2
+      :duration_s: 94
+    :implementer_story_3:
+      :input: 22
+      :output: 6078
+      :total: 6100
+      :cost_usd: 0.3342177
+      :num_turns: 24
+      :duration_s: 110
+    :context_story_3:
+      :input: 3
+      :output: 837
+      :total: 840
+      :cost_usd: 0.0822572
+      :num_turns: 2
+      :duration_s: 44
+    :planner_story_4:
+      :input: 3
+      :output: 1447
+      :total: 1450
+      :cost_usd: 0.1409918
+      :num_turns: 2
+      :duration_s: 77
+    :implementer_story_4:
+      :input: 23
+      :output: 5439
+      :total: 5462
+      :cost_usd: 0.3210189
+      :num_turns: 27
+      :duration_s: 98
+    :context_story_4:
+      :input: 3
+      :output: 973
+      :total: 976
+      :cost_usd: 0.07328845
+      :num_turns: 2
+      :duration_s: 33
+    :planner_story_6:
+      :input: 4
+      :output: 2075
+      :total: 2079
+      :cost_usd: 0.21250630000000004
+      :num_turns: 3
+      :duration_s: 125
+    :implementer_story_6:
+      :input: 20
+      :output: 12430
+      :total: 12450
+      :cost_usd: 0.49134695000000006
+      :num_turns: 28
+      :duration_s: 204
+    :context_story_6:
+      :input: 3
+      :output: 1212
+      :total: 1215
+      :cost_usd: 0.142153
+      :num_turns: 2
+      :duration_s: 71
+    :planner_story_5:
+      :input: 3
+      :output: 1234
+      :total: 1237
+      :cost_usd: 0.19983925
+      :num_turns: 2
+      :duration_s: 86
+    :implementer_story_5:
+      :input: 28
+      :output: 10103
+      :total: 10131
+      :cost_usd: 0.4917958500000001
+      :num_turns: 34
+      :duration_s: 168
+    :context_story_5:
+      :input: 3
+      :output: 813
+      :total: 816
+      :cost_usd: 0.10664799999999999
+      :num_turns: 2
+      :duration_s: 54
+    :planner_story_7:
+      :input: 3
+      :output: 1864
+      :total: 1867
+      :cost_usd: 0.19796745
+      :num_turns: 2
+      :duration_s: 94
+    :implementer_story_7:
+      :input: 37
+      :output: 14173
+      :total: 14210
+      :cost_usd: 0.8522601999999999
+      :num_turns: 37
+      :duration_s: 274
+    :context_story_7:
+      :input: 3
+      :output: 1154
+      :total: 1157
+      :cost_usd: 0.19321485
+      :num_turns: 2
+      :duration_s: 91
+    :planner_story_8:
+      :input: 3
+      :output: 1546
+      :total: 1549
+      :cost_usd: 0.20341965
+      :num_turns: 2
+      :duration_s: 95
+    :implementer_story_8:
+      :input: 43
+      :output: 28852
+      :total: 28895
+      :cost_usd: 1.3212808000000003
+      :num_turns: 45
+      :duration_s: 434
+    :context_story_8:
+      :input: 3
+      :output: 1237
+      :total: 1240
+      :cost_usd: 0.15942425
+      :num_turns: 2
+      :duration_s: 70
+    :planner_story_9:
+      :input: 3
+      :output: 1786
+      :total: 1789
+      :cost_usd: 0.24369370000000004
+      :num_turns: 2
+      :duration_s: 113
+    :implementer_story_9:
+      :input: 17
+      :output: 8888
+      :total: 8905
+      :cost_usd: 0.3911097
+      :num_turns: 21
+      :duration_s: 131
+    :context_story_9:
+      :input: 3
+      :output: 988
+      :total: 991
+      :cost_usd: 0.135432
+      :num_turns: 2
+      :duration_s: 62
+    :planner_story_10:
+      :input: 3
+      :output: 1094
+      :total: 1097
+      :cost_usd: 0.19781070000000003
+      :num_turns: 2
+      :duration_s: 89
+    :implementer_story_10:
+      :input: 15
+      :output: 4173
+      :total: 4188
+      :cost_usd: 0.23615879999999997
+      :num_turns: 15
+      :duration_s: 70
+    :context_story_10:
+      :input: 3
+      :output: 982
+      :total: 985
+      :cost_usd: 0.13940625
+      :num_turns: 2
+      :duration_s: 65
+    :planner_story_11:
+      :input: 5
+      :output: 4137
+      :total: 4142
+      :cost_usd: 0.36703450000000004
+      :num_turns: 9
+      :duration_s: 166
+    :implementer_story_11:
+      :input: 41
+      :output: 15234
+      :total: 15275
+      :cost_usd: 1.24878105
+      :num_turns: 44
+      :duration_s: 302
+    :context_story_11:
+      :input: 3
+      :output: 1266
+      :total: 1269
+      :cost_usd: 0.18408325000000003
+      :num_turns: 2
+      :duration_s: 80
+    :context_condenser:
+      :input: 3
+      :output: 2803
+      :total: 2806
+      :cost_usd: 0.2290414
+      :num_turns: 2
+      :duration_s: 123
+    :smoke_tester:
+      :input: 12
+      :output: 2953
+      :total: 2965
+      :cost_usd: 0.16229790000000002
+      :num_turns: 21
+      :duration_s: 59
+  :totals:
+    :input: 447
+    :output: 163539
+    :cost_usd: 11.497675800000003
